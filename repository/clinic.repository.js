@@ -2,48 +2,48 @@ const { connect } = require('../config/db.config');
 const logger = require('../logger/api.logger');
 
 
-class TaskRepository {
+class ClinicRepository {
 
     db = {};
 
     constructor() {
-        this.db = connect();
+        this.db = connect();    
         // For Development
-        this.db.sequelize.sync({ force: true }).then(() => {
+         this.db.sequelize.sync({ force: true }).then(() => {
             console.log("Drop and re-sync db.");
         });
     }
 
-    async getTasks() {
+    async getClinic() {
         
         try {
-            const tasks = await this.db.tasks.findAll();
-            console.log('tasks:::', tasks);
-            return tasks;
+            const clinics = await this.db.clinic.findAll();
+            console.log('clinics:::', clinics);
+            return clinics;
         } catch (err) {
             console.log(err);
             return [];
         }
     }
 
-    async createTask(task) {
+    async createClinic(clinic) {
         let data = {};
         try {
-            task.createdate = new Date().toISOString();
-            data = await this.db.tasks.create(task);
+            clinic.createdAt = new Date().toISOString();
+            data = await this.db.clinic.create(clinic);
         } catch(err) {
             logger.error('Error::' + err);
         }
         return data;
     }
 
-    async updateTask(task) {
+    async updateClinic(clinic) {
         let data = {};
         try {
-            task.updateddate = new Date().toISOString();
-            data = await this.db.tasks.update({...task}, {
+            clinic.updatedAt = new Date().toISOString();
+            data = await this.db.clinic.update({...clinic}, {
                 where: {
-                    id: task.id
+                    id: clinic.id
                 }
             });
         } catch(err) {
@@ -52,12 +52,12 @@ class TaskRepository {
         return data;
     }
 
-    async deleteTask(taskId) {
+    async deleteClinic(clinicId) {
         let data = {};
         try {
-            data = await this.db.tasks.destroy({
+            data = await this.db.clinic.destroy({
                 where: {
-                    id: taskId
+                    id: clinicId
                 }
             });
         } catch(err) {
@@ -69,4 +69,4 @@ class TaskRepository {
 
 }
 
-module.exports = new TaskRepository();
+module.exports = new ClinicRepository();
